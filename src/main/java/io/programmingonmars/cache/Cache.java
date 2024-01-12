@@ -1,0 +1,14 @@
+package io.programmingonmars.cache;
+
+import java.util.Optional;
+
+public interface Cache<K, T> {
+    void put(K key, T t);
+
+   Optional<T> get(K key);
+
+   void display();
+
+   int size();
+}
+
