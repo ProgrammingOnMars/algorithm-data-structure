@@ -58,10 +58,18 @@ public class LFUCache<K,V> implements Cache<K,V> {
     }
 
     private void evict() {
-        Item<K, V> item = data.values()
+        var minCount = data.values()
                 .stream()
-                .filter(kvItem -> kvItem.count == data.values().stream().map(c -> c.count).mapToInt(v -> v).min().getAsInt())
-                .findFirst().orElseThrow();
+                .map(c -> c.count)
+                .mapToInt(v -> v)
+                .min()
+                .orElseThrow(() -> new IllegalStateException("No item with min count found"));
+
+        var item = data.values()
+                .stream()
+                .filter(kvItem -> kvItem.count == minCount)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No item to evict"));
 
         data.remove(item.key, item);
     }
